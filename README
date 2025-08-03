@@ -1,1 +1,8 @@
-Test
+Database Schema:
+
+User(id, username, first name, last name, )
+
+Groups
+
+Todo: Get Fast api to run
+
