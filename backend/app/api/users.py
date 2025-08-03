@@ -50,7 +50,7 @@ async def get_user(
 ):
     """Get user by ID"""
     user_crud = get_user_crud(supabase)
-    user = await user_crud.get_user(user_id)
+    user = await user_crud.get_user_by_id(user_id)
 
     if not user:
         raise HTTPException(
@@ -59,3 +59,12 @@ async def get_user(
         )
 
     return user
+
+
+@router.get("/", response_model=List[User])
+async def get_all_users(supabase: Client = Depends(get_supabase)):
+    """Get all users"""
+    user_crud = get_user_crud(supabase)
+    list_of_users = await user_crud.get_all_users()
+
+    return list_of_users

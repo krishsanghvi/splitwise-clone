@@ -27,6 +27,33 @@ class UserCRUD:
             logger.error(f"Error creating user: {e}")
             return None
 
+    async def update_user(self, user_id: str, email: str = None, full_name: str = None, timezone: str = None) -> Optional[User]:
+        """Update user information"""
+        try:
+            update_data = {}
+            if email:
+                update_data['email'] = email
+            if full_name:
+                update_data['full_name'] = full_name
+            if timezone:
+                update_data['timezone'] = timezone
+
+            if not update_data:
+                # No updates made
+                return await self.get_user_by_id(user_id)
+
+            result = self.supabase.table('users')\
+                .update(update_data)\
+                .eq('id', user_id)\
+                .execute()
+
+            if result.data:
+                return User(**result.data[0])
+            return None
+        except Exception as e:
+            logger.error(f"Error updating user {user_id}: {e}")
+            return None
+
     async def list_users(self, limit: int = 50, offset: int = 0) -> List[User]:
         """List users with pagination"""
         try:
@@ -39,6 +66,46 @@ class UserCRUD:
             return [User(**user) for user in result.data]
         except Exception as e:
             logger.error(f"Error listing users: {e}")
+            return []
+
+    async def get_user_by_id(self, id: str) -> Optional[User]:
+        try:
+            result = self.supabase.table('users')\
+                .select('*')\
+                .eq('id', id)\
+                .execute()
+
+            if result.data:
+                return User(**result.data[0])
+            return None
+        except Exception as e:
+            logger.error("Error getting user by id {id}: {e}")
+            return None
+
+    async def get_user_by_email(self, email: str) -> Optional[User]:
+        try:
+            result = self.supabase.table('users')\
+                .select("*")\
+                .eq("email", email)\
+                .execute()
+
+            if result.data:
+                return User(**result.data[0])
+            return None
+        except Exception as e:
+            logger.error(f"Error getting user by email {email}: {e}")
+            return None
+
+    async def get_all_users(self) -> List[User]:
+        try:
+            result = self.supabase.table('users')\
+                .select('*')\
+                .execute()
+            if result.data:
+                return [User(**user) for user in result.data]
+            return []
+        except Exception as e:
+            logger.error(f"Error getting all users: {e}")
             return []
 
 
