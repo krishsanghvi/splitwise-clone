@@ -54,19 +54,48 @@ class UserCRUD:
             logger.error(f"Error updating user {user_id}: {e}")
             return None
 
-    async def list_users(self, limit: int = 50, offset: int = 0) -> List[User]:
-        """List users with pagination"""
+    async def delete_user(self, user_id: str) -> bool:
+        """Delete user"""
         try:
             result = self.supabase.table('users')\
+                .delete()\
+                .eq('id', user_id)\
+                .execute()
+
+            return len(result.data) > 0
+        except Exception as e:
+            logger.error(f"Error deleting user {user_id}: {e}")
+            return False
+
+    async def search_users(self, search_term: str, limit: int = 20) -> List[User]:
+        """Search users by name or email"""
+        try:
+            result = self.supabase.table("users")\
                 .select('*')\
-                .order('created_at', desc=True)\
-                .range(offset, offset + limit - 1)\
+                .or_(f'full_name.ilike.%{search_term}%,email.ilike.%{search_term}%')\
+                .limit(limit)\
                 .execute()
 
             return [User(**user) for user in result.data]
+
         except Exception as e:
-            logger.error(f"Error listing users: {e}")
+            logger.error(
+                f"Error searching for users with search term {search_term}: {e}")
             return []
+
+    # async def list_users(self, limit: int = 50, offset: int = 0) -> List[User]:
+    #     """List users with pagination"""
+    #     try:
+    #         result = self.supabase.table('users')\
+    #             .select('*')\
+    #             .order('created_at', desc=True)\
+    #             .range(offset, offset + limit - 1)\
+    #             .execute()
+
+    #         return [User(**user) for user in result.data]
+    #     except Exception as e:
+    #         logger.error(f"Error listing users: {e}")
+    #         return []
 
     async def get_user_by_id(self, id: str) -> Optional[User]:
         try:
@@ -79,7 +108,7 @@ class UserCRUD:
                 return User(**result.data[0])
             return None
         except Exception as e:
-            logger.error("Error getting user by id {id}: {e}")
+            logger.error(f"Error getting user by id {id}: {e}")
             return None
 
     async def get_user_by_email(self, email: str) -> Optional[User]:
@@ -96,14 +125,15 @@ class UserCRUD:
             logger.error(f"Error getting user by email {email}: {e}")
             return None
 
-    async def get_all_users(self) -> List[User]:
+    async def get_all_users(self, limit: int = 50, offset: int = 0) -> List[User]:
         try:
             result = self.supabase.table('users')\
                 .select('*')\
+                .order('created_at', desc=True)\
+                .range(offset, offset + limit - 1)\
                 .execute()
-            if result.data:
-                return [User(**user) for user in result.data]
-            return []
+
+            return [User(**user) for user in result.data]
         except Exception as e:
             logger.error(f"Error getting all users: {e}")
             return []
