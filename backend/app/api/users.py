@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from supabase import Client
-from database import get_supabase
-from crud.users import get_user_crud, UserCRUD
-from schemas.users import User
+from app.database import get_supabase
+from app.crud.users import get_user_crud, UserCRUD
+from app.schemas.users import User
 import uuid
 
 router = APIRouter()

@@ -32,16 +32,16 @@ app = FastAPI(
     title=settings.project_name,
     description="A FastAPI backend for expense splitting",
     version="1.0.0",
-    openapi_url=f"{settings.api_v1_str}/openapi.json",
-    docs_url=f"{settings.api_v1_str}/docs",
-    redoc_url=f"{settings.api_v1_str}/redoc",
+    openapi_url=f"{settings.api_prefix}/openapi.json",
+    docs_url=f"{settings.api_prefix}/docs",
+    redoc_url=f"{settings.api_prefix}/redoc",
     lifespan=lifespan
 )
 
 # Include routers
 app.include_router(
     users.router,
-    prefix=f"{settings.api_v1_str}/users",
+    prefix=f"{settings.api_prefix}/users",
     tags=["users"]
 )
 

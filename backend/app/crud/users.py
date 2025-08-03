@@ -1,6 +1,6 @@
-from schemas.users import User
+from app.schemas.users import User
 from supabase import Client
-from typing import Optional
+from typing import Optional, List
 import uuid
 import logging
 

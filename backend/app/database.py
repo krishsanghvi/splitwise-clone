@@ -1,5 +1,5 @@
 from supabase import Client, create_client
-from config import settings
+from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ class SupabaseConnection:
             self.client = create_client(
                 settings.supabase_url, settings.supabase_key)
             self.admin_client = create_client(
-                settings.database_url, settings.supabase_service_key)
+                settings.supabase_url, settings.supabase_service_key)
 
             logger.info("Connected to Supabase successfully!")
             return True
