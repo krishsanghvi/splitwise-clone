@@ -4,7 +4,7 @@ from typing import AsyncGenerator, Iterator
 from httpx import AsyncClient
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
-
+import pytest_asyncio
 from app.main import app
 from app.database import get_supabase
 from app.schemas.users import User
@@ -40,9 +40,8 @@ def override_get_supabase(mock_supabase):
     return _get_supabase_override
 
 
-@pytest.fixture
-# -> AsyncGenerator[AsyncClient, None]:
-async def async_client(override_get_supabase):
+@pytest_asyncio.fixture
+async def async_client(override_get_supabase) -> AsyncGenerator[AsyncClient, None]:
     """Create async test client with mocked dependencies"""
     app.dependency_overrides[get_supabase] = override_get_supabase
 

@@ -67,14 +67,16 @@ class UserCRUD:
             logger.error(f"Error deleting user {user_id}: {e}")
             return False
 
-    async def search_users(self, search_term: str, limit: int = 20) -> List[User]:
+    async def search_users(self, search_term: str) -> List[User]:
         """Search users by name or email"""
         try:
-            result = self.supabase.table("users")\
-                .select('*')\
-                .or_(f'full_name.ilike.%{search_term}%,email.ilike.%{search_term}%')\
-                .limit(limit)\
-                .execute()
+            # result = self.supabase.table("users")\
+            #     .select('*')\
+            #     .or_(f'full_name.ilike.%{search_term}%,email.ilike.%{search_term}%')\
+            #     .limit(limit)\
+            #     .execute()
+            result = self.supabase.rpc(
+                "search_users", {"term": search_term}).execute()
 
             return [User(**user) for user in result.data]
 
@@ -117,6 +119,8 @@ class UserCRUD:
                 .select("*")\
                 .eq("email", email)\
                 .execute()
+
+            logger.info(f"Result: {result}")
 
             if result.data:
                 return User(**result.data[0])

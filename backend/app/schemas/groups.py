@@ -7,8 +7,8 @@ from typing import Optional
 class Groups(BaseModel):
     id: Optional[uuid.UUID] = None
     created_by: Optional[uuid.UUID] = None
-    name: str
-    description: Optional[str] = None
+    group_name: str
+    group_description: Optional[str] = None
     invite_code: Optional[str] = None
     is_active: bool = True
     created_at: Optional[datetime] = None

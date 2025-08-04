@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.database import supabase_conn
 from app.api import users
+from app.api import groups
 from app.config import settings
 import logging
 
@@ -43,6 +44,12 @@ app.include_router(
     users.router,
     prefix=f"{settings.api_prefix}/users",
     tags=["users"]
+)
+
+app.include_router(
+    groups.router,
+    prefix=f"{settings.api_prefix}/groups",
+    tags=["groups"]
 )
 
 

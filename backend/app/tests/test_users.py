@@ -154,28 +154,25 @@ class TestUserCrud:
 
     @pytest.mark.asyncio
     async def test_search_users_success(self, mock_supabase, multiple_users):
-        """Test successful user search"""
+        """Test successful user search using RPC"""
         from app.crud.users import UserCRUD
 
-        # Setup: Mock returns filtered results
-        # Your search method likely uses: .select('*').or_(query).limit(limit).execute()
+        # Setup: Mock the rpc call
         filtered_users = [
             user for user in multiple_users if "1" in user["email"]]
-        mock_chain = mock_supabase.table.return_value
-        mock_chain.select.return_value.or_.return_value.limit.return_value.execute.return_value.data = filtered_users
+        mock_supabase.rpc.return_value.execute.return_value.data = filtered_users
 
         # Test
         crud = UserCRUD(mock_supabase)
-        result = await crud.search_users("test1", limit=20)
+        result = await crud.search_users("test1")
 
         # Assertions
         assert len(result) == 1
         assert "test1" in result[0].email
 
         # Verify calls
-        mock_supabase.table.return_value.select.return_value.or_.assert_called_once()
-        mock_supabase.table.return_value.select.return_value.or_.return_value.limit.assert_called_with(
-            20)
+        mock_supabase.rpc.assert_called_with("search_users", {"term": "test1"})
+        mock_supabase.rpc.return_value.execute.assert_called_once()
 
 
 class TestUserAPI:
@@ -238,7 +235,7 @@ class TestUserAPI:
 
         # Test
         user_id = sample_user_data["id"]
-        response = await async_client.get(f"/api/v1/users/{user_id}")
+        response = await async_client.get(f"/api/v1/users/id/{user_id}")
 
         # Assertions
         assert response.status_code == 200
@@ -285,7 +282,7 @@ class TestUserAPI:
         mock_supabase.table.return_value.select.return_value.eq.return_value.execute.return_value.data = []
 
         # Test
-        response = await async_client.get("/api/v1/users/nonexistent-id")
+        response = await async_client.get("/api/v1/users/id/nonexistent-id")
 
         # Assertions
         assert response.status_code == 404
@@ -297,11 +294,11 @@ class TestUserAPI:
         # Setup: Mock returns filtered results
         filtered_users = [
             user for user in multiple_users if "1" in user["email"]]
-        mock_chain = mock_supabase.table.return_value
-        mock_chain.select.return_value.or_.return_value.limit.return_value.execute.return_value.data = filtered_users
+        # Mock the rpc call that the CRUD actually uses
+        mock_supabase.rpc.return_value.execute.return_value.data = filtered_users
 
         # Test
-        response = await async_client.get("/api/v1/users/search/?q=test1")
+        response = await async_client.get("/api/v1/users/search?search_term=test1")
 
         # Assertions
         assert response.status_code == 200

@@ -4,3 +4,4 @@ httpx
 pytest-mock 
 fakeredis
 factory-boy
+pytest-asyncio

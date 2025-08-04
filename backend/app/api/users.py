@@ -43,7 +43,7 @@ async def create_user(
     return user
 
 
-@router.get("/{user_id}", response_model=User)
+@router.get("/id/{user_id}", response_model=User)
 async def get_user(
     user_id: str,
     supabase: Client = Depends(get_supabase),
@@ -61,7 +61,7 @@ async def get_user(
     return user
 
 
-@router.get("/{email}", response_model=User)
+@router.get("/email/{email}", response_model=User)
 async def get_user_by_email(
     email: str,
     supabase: Client = Depends(get_supabase)
@@ -166,11 +166,11 @@ async def delete_user(
 @router.get("/search", response_model=List[User])
 async def search_users(
     search_term: str,
-    limit: int = Query(
-        20, ge=1, le=100, description="Number of users to return"),
+    # limit: int = Query(
+    #     20, ge=1, le=100, description="Number of users to return"),
     supabase: Client = Depends(get_supabase)
 ):
     """Search users by name or email"""
     user_crud = get_user_crud(supabase)
-    users = await user_crud.search_users(search_term, limit)
+    users = await user_crud.search_users(search_term)
     return users
