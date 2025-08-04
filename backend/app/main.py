@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from app.database import supabase_conn
 from app.api import users
 from app.api import groups
+from app.api import group_members
 from app.config import settings
 import logging
 
@@ -50,6 +51,12 @@ app.include_router(
     groups.router,
     prefix=f"{settings.api_prefix}/groups",
     tags=["groups"]
+)
+
+app.include_router(
+    group_members.router,
+    prefix=f"{settings.api_prefix}/group_members",
+    tags=["group_members"]
 )
 
 

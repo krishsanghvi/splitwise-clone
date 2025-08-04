@@ -5,7 +5,7 @@ from typing import Optional
 
 
 class GroupMembers(BaseModel):
-    id: Optional[uuid.UUID] = None
+    id: Optional[uuid.UUID] = None  # AKA  member_id
     group_id: uuid.UUID
     user_id: uuid.UUID
     role: str = "member"

@@ -9,6 +9,7 @@ from app.main import app
 from app.database import get_supabase
 from app.schemas.users import User
 from app.schemas.groups import Groups
+from app.schemas.group_members import GroupMembers
 from datetime import datetime
 import uuid
 
@@ -137,4 +138,53 @@ def multiple_groups():
             "updated_at": datetime.now()
         }
         for i in range(1, 4)
+    ]
+
+
+@pytest.fixture
+def sample_group_member_data():
+    """Sample group member data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4()),
+        "user_id": str(uuid.uuid4()),
+        "role": "member",
+        "joined_at": datetime.now(),
+        "is_active": True
+    }
+
+
+@pytest.fixture
+def sample_group_member(sample_group_member_data):
+    """Sample GroupMembers object"""
+    return GroupMembers(**sample_group_member_data)
+
+
+@pytest.fixture
+def admin_group_member_data():
+    """Sample admin group member data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4()),
+        "user_id": str(uuid.uuid4()),
+        "role": "admin",
+        "joined_at": datetime.now(),
+        "is_active": True
+    }
+
+
+@pytest.fixture
+def multiple_group_members():
+    """Multiple group members for list testing"""
+    group_id = str(uuid.uuid4())
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "user_id": str(uuid.uuid4()),
+            "role": "member" if i > 1 else "admin",
+            "joined_at": datetime.now(),
+            "is_active": True
+        }
+        for i in range(1, 5)
     ]
