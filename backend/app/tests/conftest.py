@@ -11,7 +11,9 @@ from app.schemas.users import User
 from app.schemas.groups import Groups
 from app.schemas.group_members import GroupMembers
 from app.schemas.categories import Categories
+from app.schemas.balances import Balances
 from datetime import datetime
+from decimal import Decimal
 import uuid
 
 
@@ -237,3 +239,69 @@ def multiple_categories():
         }
         for i in range(1, 5)
     ]
+
+
+@pytest.fixture
+def sample_balance_data():
+    """Sample balance data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4()),
+        "user_from": str(uuid.uuid4()),
+        "user_to": str(uuid.uuid4()),
+        "amount": Decimal("25.50"),
+        "last_updated": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_balance(sample_balance_data):
+    """Sample Balances object"""
+    return Balances(**sample_balance_data)
+
+
+@pytest.fixture
+def multiple_balances():
+    """Multiple balances for list testing"""
+    group_id = str(uuid.uuid4())
+    user1 = str(uuid.uuid4())
+    user2 = str(uuid.uuid4())
+    user3 = str(uuid.uuid4())
+    
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "user_from": user1,
+            "user_to": user2,
+            "amount": Decimal("20.00"),
+            "last_updated": datetime.now()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "user_from": user2,
+            "user_to": user3,
+            "amount": Decimal("15.75"),
+            "last_updated": datetime.now()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "user_from": user3,
+            "user_to": user1,
+            "amount": Decimal("10.25"),
+            "last_updated": datetime.now()
+        }
+    ]
+
+
+@pytest.fixture
+def balance_fixture_users():
+    """Fixed user IDs for balance testing"""
+    return {
+        "user1": str(uuid.uuid4()),
+        "user2": str(uuid.uuid4()),
+        "user3": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4())
+    }

@@ -5,6 +5,7 @@ from app.api import users
 from app.api import groups
 from app.api import group_members
 from app.api import categories
+from app.api import balances
 from app.config import settings
 import logging
 
@@ -64,6 +65,12 @@ app.include_router(
     categories.router,
     prefix=f"{settings.api_prefix}/categories",
     tags=["categories"]
+)
+
+app.include_router(
+    balances.router,
+    prefix=f"{settings.api_prefix}/balances",
+    tags=["balances"]
 )
 
 
