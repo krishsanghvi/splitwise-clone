@@ -8,6 +8,7 @@ import pytest_asyncio
 from app.main import app
 from app.database import get_supabase
 from app.schemas.users import User
+from app.schemas.groups import Groups
 from datetime import datetime
 import uuid
 
@@ -92,6 +93,46 @@ def multiple_users():
             "email": f"test{i}@example.com",
             "full_name": f"Test User {i}",
             "timezone": "UTC",
+            "created_at": datetime.now(),
+            "updated_at": datetime.now()
+        }
+        for i in range(1, 4)
+    ]
+
+
+@pytest.fixture
+def sample_group_data():
+    """Sample group data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "created_by": str(uuid.uuid4()),
+        "group_name": "Test Group",
+        "group_description": "Test Description",
+        "invite_code": "TEST123",
+        "is_active": True,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_group(sample_group_data):
+    """Sample Group object"""
+    return Groups(**sample_group_data)
+
+
+@pytest.fixture
+def multiple_groups():
+    """Multiple groups for list testing"""
+    creator_id = str(uuid.uuid4())
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "created_by": creator_id,
+            "group_name": f"Test Group {i}",
+            "group_description": f"Test Description {i}",
+            "invite_code": f"TEST{i}",
+            "is_active": True,
             "created_at": datetime.now(),
             "updated_at": datetime.now()
         }
