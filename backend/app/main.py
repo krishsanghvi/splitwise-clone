@@ -4,6 +4,7 @@ from app.database import supabase_conn
 from app.api import users
 from app.api import groups
 from app.api import group_members
+from app.api import categories
 from app.config import settings
 import logging
 
@@ -57,6 +58,12 @@ app.include_router(
     group_members.router,
     prefix=f"{settings.api_prefix}/group_members",
     tags=["group_members"]
+)
+
+app.include_router(
+    categories.router,
+    prefix=f"{settings.api_prefix}/categories",
+    tags=["categories"]
 )
 
 

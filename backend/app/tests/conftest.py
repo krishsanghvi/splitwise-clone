@@ -10,6 +10,7 @@ from app.database import get_supabase
 from app.schemas.users import User
 from app.schemas.groups import Groups
 from app.schemas.group_members import GroupMembers
+from app.schemas.categories import Categories
 from datetime import datetime
 import uuid
 
@@ -185,6 +186,54 @@ def multiple_group_members():
             "role": "member" if i > 1 else "admin",
             "joined_at": datetime.now(),
             "is_active": True
+        }
+        for i in range(1, 5)
+    ]
+
+
+@pytest.fixture
+def sample_category_data():
+    """Sample category data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "name": "Food & Dining",
+        "icon": "utensils",
+        "color": "#FF5733",
+        "is_default": True,
+        "created_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_category(sample_category_data):
+    """Sample Categories object"""
+    return Categories(**sample_category_data)
+
+
+@pytest.fixture
+def custom_category_data():
+    """Sample custom category data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "name": "Custom Category",
+        "icon": "star",
+        "color": "#33FF57",
+        "is_default": False,
+        "created_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def multiple_categories():
+    """Multiple categories for list testing"""
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "name": f"Category {i}",
+            "icon": f"icon{i}",
+            "color": f"#FF{i}733",
+            "is_default": i <= 2,
+            "created_at": datetime.now()
         }
         for i in range(1, 5)
     ]
