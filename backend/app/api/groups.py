@@ -45,7 +45,7 @@ async def create_group(
     return group
 
 
-@router.get("/{group_id}", response_model=Groups)
+@router.get("/id/{group_id}", response_model=Groups)
 async def get_group(
     group_id: str,
     supabase: Client = Depends(get_supabase),
@@ -78,17 +78,6 @@ async def get_group_by_invite_code(
             detail="Group not found"
         )
     return group
-
-
-@router.get("/search", response_model=List[Groups])
-async def search_groups(
-    search_term: str,
-    limit: int = Query(20, ge=1, le=100),
-    supabase: Client = Depends(get_supabase)
-):
-    """Search groups by name or description"""
-    group_crud = get_group_crud(supabase)
-    return await group_crud.search_groups(search_term, limit)
 
 
 @router.get("/", response_model=List[Groups])
@@ -127,6 +116,17 @@ async def get_groups_by_user(
     groups = await group_crud.get_groups_by_user(user_id, limit=limit, offset=offset)
 
     return groups
+
+
+@router.get("/search", response_model=List[Groups])
+async def search_groups(
+    search_term: str,
+    limit: int = Query(20, ge=1, le=100),
+    supabase: Client = Depends(get_supabase)
+):
+    """Search groups by name or description"""
+    group_crud = get_group_crud(supabase)
+    return await group_crud.search_groups(search_term, limit)
 
 
 @router.put("/{group_id}", response_model=Groups)
