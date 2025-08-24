@@ -12,7 +12,10 @@ from app.schemas.groups import Groups
 from app.schemas.group_members import GroupMembers
 from app.schemas.categories import Categories
 from app.schemas.balances import Balances
-from datetime import datetime
+from app.schemas.expenses import Expenses
+from app.schemas.expense_shares import ExpenseShares
+from app.schemas.settlements import Settlements
+from datetime import datetime, date
 from decimal import Decimal
 import uuid
 
@@ -305,3 +308,140 @@ def balance_fixture_users():
         "user3": str(uuid.uuid4()),
         "group_id": str(uuid.uuid4())
     }
+
+
+@pytest.fixture
+def sample_expense_data():
+    """Sample expense data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4()),
+        "paid_by": str(uuid.uuid4()),
+        "category_id": str(uuid.uuid4()),
+        "amount": Decimal("25.50"),
+        "description": "Dinner at restaurant",
+        "notes": "Split equally among group members",
+        "split_method": "equal",
+        "expense_date": date.today().isoformat(),
+        "is_reimbursement": False,
+        "created_at": datetime.now(),
+        "updated_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_expense(sample_expense_data):
+    """Sample Expenses object"""
+    return Expenses(**sample_expense_data)
+
+
+@pytest.fixture
+def multiple_expenses():
+    """Multiple expenses for list testing"""
+    group_id = str(uuid.uuid4())
+    user1 = str(uuid.uuid4())
+    user2 = str(uuid.uuid4())
+    category_id = str(uuid.uuid4())
+    
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "paid_by": user1,
+            "category_id": category_id,
+            "amount": Decimal("30.00"),
+            "description": f"Expense {i}",
+            "notes": f"Notes for expense {i}",
+            "split_method": "equal",
+            "expense_date": date.today().isoformat(),
+            "is_reimbursement": False,
+            "created_at": datetime.now(),
+            "updated_at": datetime.now()
+        }
+        for i in range(1, 4)
+    ]
+
+
+@pytest.fixture
+def sample_expense_share_data():
+    """Sample expense share data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "expense_id": str(uuid.uuid4()),
+        "user_id": str(uuid.uuid4()),
+        "amount_owned": Decimal("12.75"),
+        "is_settled": False,
+        "created_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_expense_share(sample_expense_share_data):
+    """Sample ExpenseShares object"""
+    return ExpenseShares(**sample_expense_share_data)
+
+
+@pytest.fixture
+def multiple_expense_shares():
+    """Multiple expense shares for list testing"""
+    expense_id = str(uuid.uuid4())
+    
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "expense_id": expense_id,
+            "user_id": str(uuid.uuid4()),
+            "amount_owned": Decimal(f"{10 + i}.{25 * i}"),
+            "is_settled": i % 2 == 0,
+            "created_at": datetime.now()
+        }
+        for i in range(1, 5)
+    ]
+
+
+@pytest.fixture
+def sample_settlement_data():
+    """Sample settlement data for testing"""
+    return {
+        "id": str(uuid.uuid4()),
+        "group_id": str(uuid.uuid4()),
+        "from_user": str(uuid.uuid4()),
+        "to_user": str(uuid.uuid4()),
+        "amount": Decimal("50.00"),
+        "method": "cash",
+        "reference_id": "REF123456",
+        "notes": "Payment for shared expenses",
+        "settled_at": datetime.now(),
+        "created_at": datetime.now()
+    }
+
+
+@pytest.fixture
+def sample_settlement(sample_settlement_data):
+    """Sample Settlements object"""
+    return Settlements(**sample_settlement_data)
+
+
+@pytest.fixture
+def multiple_settlements():
+    """Multiple settlements for list testing"""
+    group_id = str(uuid.uuid4())
+    user1 = str(uuid.uuid4())
+    user2 = str(uuid.uuid4())
+    user3 = str(uuid.uuid4())
+    
+    return [
+        {
+            "id": str(uuid.uuid4()),
+            "group_id": group_id,
+            "from_user": user1 if i % 2 == 0 else user2,
+            "to_user": user2 if i % 2 == 0 else user3,
+            "amount": Decimal(f"{20 + i * 5}.00"),
+            "method": "cash" if i % 2 == 0 else "digital",
+            "reference_id": f"REF{i}23456",
+            "notes": f"Settlement {i}",
+            "settled_at": datetime.now() if i % 3 == 0 else None,
+            "created_at": datetime.now()
+        }
+        for i in range(1, 4)
+    ]

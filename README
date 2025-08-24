@@ -6,3 +6,17 @@ Groups
 
 Todo: Get Fast api to run
 
+# Activate Virtual Environment
+cd backend
+python venv/bin/activate
+
+# Run Backend
+cd backend
+uvicorn app.main:app --reload  
+
+# Docs URL
+http://127.0.0.1:8000/api/v1/docs
+
+# Run Tests
+
+

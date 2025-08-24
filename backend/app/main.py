@@ -6,6 +6,9 @@ from app.api import groups
 from app.api import group_members
 from app.api import categories
 from app.api import balances
+from app.api import expenses
+from app.api import expense_shares
+from app.api import settlements
 from app.config import settings
 import logging
 
@@ -71,6 +74,24 @@ app.include_router(
     balances.router,
     prefix=f"{settings.api_prefix}/balances",
     tags=["balances"]
+)
+
+app.include_router(
+    expenses.router,
+    prefix=f"{settings.api_prefix}/expenses",
+    tags=["expenses"]
+)
+
+app.include_router(
+    expense_shares.router,
+    prefix=f"{settings.api_prefix}/expense_shares",
+    tags=["expense_shares"]
+)
+
+app.include_router(
+    settlements.router,
+    prefix=f"{settings.api_prefix}/settlements",
+    tags=["settlements"]
 )
 
 
