@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginForm } from './components/auth/LoginForm'
 import { RegisterForm } from './components/auth/RegisterForm'
 import { Dashboard } from './pages/Dashboard'
+import { GroupDetails } from './pages/GroupDetails'
 
 function App() {
   return (
@@ -22,6 +23,12 @@ function App() {
             }
           />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/groups/:groupId" element={
+              <ProtectedRoute>
+                <GroupDetails />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
